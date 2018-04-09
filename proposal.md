@@ -61,7 +61,7 @@ and softmax cross entropy to classify the images.
 
 After this we will be using a 2 hidden layer CNN to classify the images.
 
-![CNN](images/cnn.png)
+![CNN](images/CNN.png)
 
 
 
