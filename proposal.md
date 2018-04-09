@@ -9,6 +9,11 @@ April 8, 2018
 ### Domain Background
 One motivation for representation learning is that learning algorithms can design features better and faster than humans can. To this end, this Kaggle problem tries to find the expression depicted by a human face. Here, the goal is to find the expression from an image not train the machine to understand the emotions. The problem can be found [here](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge).
 
+Following are some related problems on Kaggle where the learning and solutions developed for this problem can be helpful:
+1. [Facial Expression Prediction](https://www.kaggle.com/c/facial-expression-prediction4)
+2. [VISUM - Facial Expression Analysis](https://www.kaggle.com/c/visum-facial-expression-analysis)
+3. [Facial Expression Prediction](https://www.kaggle.com/c/csc411f15-facial-expression-prediction)
+
 
 
 ### Problem Statement
@@ -23,6 +28,9 @@ Here we need to train a CNN which will predict (after the model is trained) if a
 The [data](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) consists of 48x48 pixel grayscale images of faces. The faces have been automatically registered so that the face is more or less centered and occupies about the same amount of space in each image. The task is to categorize each face based on the emotion shown in the facial expression into one of seven categories (0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral).
 
 train.csv contains two columns, "emotion" and "pixels". The "emotion" column contains a numeric code ranging from 0 to 6, inclusive, for the emotion that is present in the image. The "pixels" column contains a string surrounded by quotes for each image. The contents of this string a space-separated pixel values in row-major order. test.csv contains only the "pixels" column and our task is to predict the emotion column.
+
+- **The training set consists of 28,709 images.**
+- **There are two test sets each containing 3589 images.**
 
 Some sample images from the data set are:
 
