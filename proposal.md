@@ -1,22 +1,3 @@
-<!-- TOC -->
-
-- [Machine Learning Engineer Nanodegree](#machine-learning-engineer-nanodegree)
-    - [Capstone Proposal](#capstone-proposal)
-    - [Proposal](#proposal)
-        - [Domain Background](#domain-background)
-        - [Problem Statement](#problem-statement)
-        - [Datasets and Inputs](#datasets-and-inputs)
-        - [Solution Statement](#solution-statement)
-        - [Benchmark Model](#benchmark-model)
-        - [Evaluation Metrics](#evaluation-metrics)
-        - [Project Design](#project-design)
-            - [Environment](#environment)
-            - [Libraries](#libraries)
-            - [Implementation](#implementation)
-        - [References](#references)
-
-<!-- /TOC -->
-
 # Machine Learning Engineer Nanodegree
 ## Capstone Proposal
 Ashwani Kumar  
@@ -118,7 +99,7 @@ Python 3.+
 #### Implementation
 
 1. Data normalization: We will normalize the data so that the values are within 0-1.
-2. Data Augmentation: This will be done to control class imbalance as mentioned in [Data-Input](#datasets-and-inputs)
+2. Data Augmentation: This will be done to control class imbalance as mentioned in data-input.
 3. The baseline will be established using a linear classifier model.
 4. Then a CNN with two hidden layers will be trained to classify the data.
 5. Once we have a working model in place, then we will tune the hyper-parameter to see if we can optimize the model.
