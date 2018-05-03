@@ -19,14 +19,14 @@ validate_X, validate_y = get_test_set(df.loc[df['Usage'] == 'PrivateTest'])
 labels = 7
 image_size = 2304
 
-params = HyperParameter(num_batches=2, batch_size=8,
-                        epoch=200, learning_rate=.001, hold_prob=0.5)
+params = HyperParameter(num_batches=1, batch_size=1,
+                        epoch=3, learning_rate=.001, hold_prob=0.5, epoch_to_report=1)
 
 log(params)
 
-model = LinearClassifer(params=params, labels=labels, image_size=image_size)
-#model = CNN(params=params, labels=labels, image_size=image_size)
+#model = LinearClassifer(params=params, labels=labels, image_size=image_size)
+model = CNN(params=params, labels=labels, image_size=image_size)
 
 
 log(model.run(train_X=train_X, train_y=train_y, test_X=test_X,
-          test_y=test_y, validate_X=validate_X, validate_y=validate_y))
+              test_y=test_y, validate_X=validate_X, validate_y=validate_y))

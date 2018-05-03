@@ -39,6 +39,7 @@ class CNN:
         return tf.matmul(input_layer, W) + b
 
     def run(self, train_X, train_y, test_X, test_y, validate_X, validate_y):
+        accuracyDictionary = {}
         x = tf.placeholder(tf.float32, shape=[None, self.image_size])
         y_true = tf.placeholder(tf.float32, shape=[None, self.labels])
         x_image = tf.reshape(x, [-1, 48, 48, 1])
@@ -81,14 +82,9 @@ class CNN:
                         })
                 if step % self.params.epoch_to_report == 0:
                     log(step, "Epoch")
-                    log(
-                        sess.run(
-                            accuracy,
-                            feed_dict={
-                                x: test_X,
-                                y_true: test_y,
-                                hold_prob: 1.0
-                            }), "model accuracy")
+                    accuracyDictionary[step] = sess.run(accuracy, feed_dict={x: test_X,
+                                                                             y_true: test_y, hold_prob: 1.0})
+                    log(accuracyDictionary[step], "model accuracy")
             log(
                 sess.run(
                     accuracy,
@@ -97,3 +93,4 @@ class CNN:
                         y_true: validate_y,
                         hold_prob: 1.0
                     }), "Final accuracy")
+        return accuracyDictionary
