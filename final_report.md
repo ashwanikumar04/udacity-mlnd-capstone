@@ -136,8 +136,8 @@ Some sample images from the data set are:
 ## Training set grouped by classes
 ![CNN](images/class.png)
 
-## Preprocessing Data
-We will normalize the data so that all the pixels have 0-1 value. Also, we will add class 1 items 10 times to augment class 1 training data. As our label are 0, 1, 2, 3, 4, 5, 6, we will one-hot encode them. The complete code is availabe [here](helpers.py).
+## Pre-processing Data
+We will normalize the data so that all the pixels have 0-1 value. Also, we will add class 1 items 10 times to augment class 1 training data. As our label are 0, 1, 2, 3, 4, 5, 6, we will one-hot encode them. The complete code is available [here](helpers.py).
 ```
 
 def one_hot_encode(x):
@@ -243,7 +243,7 @@ And as this is a Kaggle problem, we can also compare our solution against the to
 2. Data Augmentation: This will be done to control class imbalance as mentioned in data-input. (See Preprocessing Data)
 3. The baseline will be established using a linear classifier model.
 
-The complete code is availabe [here](linear_classifier.py).
+The complete code is available [here](linear_classifier.py).
 
 ```
  def run(self, train_X, train_y, test_X, test_y, validate_X, validate_y):
@@ -282,9 +282,9 @@ The complete code is availabe [here](linear_classifier.py).
 4. CNN Layers :
 
    - Convolution : Convolutional layers convolve around the image to detect edges, lines, and other features.
-   - MaxPooling : This layer preservs the most dominent features.
-    - Dropout : In this simple we randomnly drop neuron to avoid overfitting.
-The complete code is availabe [here](cnn.py).
+   - MaxPooling : This layer preserves the most dominant features.
+    - Dropout : In this simple we randomly drop neuron to avoid overfitting.
+The complete code is available [here](cnn.py).
 
 ```
 
