@@ -12,6 +12,6 @@ Python Modules:
 5. Tensorflow
 6. Scikit-learn
 
-DataSet is availabl [here](
+DataSet is available [here](
 https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data).
 
