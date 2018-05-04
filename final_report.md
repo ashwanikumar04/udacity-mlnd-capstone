@@ -46,19 +46,6 @@ Some sample images from the data set are:
 ##### Training
 
 <div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -105,19 +92,6 @@ Some sample images from the data set are:
 
 #### Test
 <div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -411,19 +385,6 @@ class CNN:
 ```
 ## Results
 <div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -450,21 +411,25 @@ class CNN:
       <td>:  epoch: 100, num_batches: 64, batch_size: 32, learning_rate: 0.5, hold_prob: (1.0,)</td>
       <td>0.24</td>
       <td>As can be seen here, it is almost similar to the linear classifier.</td>
+      <td><image src="images/cnn_g1.png"/></td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>Linear Classifier</td>
-      <td>epoch: 1000, num_batches: 64, batch_size: 32, learning_rate: 0.5, hold_prob: (0.5,)</td>
-      <td>0.26</td>
-      <td>Here, hold_prob has no role</td>
+      <th>3</th>
+      <td>CNN with drop out</td>
+      <td>epoch: 100, num_batches: 128, batch_size: 128, learning_rate: 0.001, hold_prob: (0.5,)</td>
+      <td>0.52</td>
+      <td>Here, we have significant improvement</td>
+      <td><image src="images/cnn_2.png"/></td>
+    </tr>
+      <tr>
+      <th>4</th>
+      <td>CNN with drop out</td>
+      <td>:  epoch: 500, num_batches: 25, batch_size: 256, learning_rate: 0.001, hold_prob: (0.5,)</td>
+      <td>0.54</td>
+      <td>Here, we have significant improvement</td>
+      <td><image src="images/cnn_3.png"/></td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>Linear Classifier</td>
-      <td>epoch: 1000, num_batches: 64, batch_size: 32, learning_rate: 0.5, hold_prob: (0.5,)</td>
-      <td>0.26</td>
-      <td>Here, hold_prob has no role</td>
-    </tr>
   </tbody>
 </table>
 </div>
