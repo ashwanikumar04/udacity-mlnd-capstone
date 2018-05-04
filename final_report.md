@@ -137,7 +137,7 @@ Some sample images from the data set are:
 ![CNN](images/class.png)
 
 ## Pre-processing Data
-We will normalize the data so that all the pixels have 0-1 value. Also, we will add class 1 items 10 times to augment class 1 training data. As our label are 0, 1, 2, 3, 4, 5, 6, we will one-hot encode them. The complete code is available [here](helpers.py).
+We will normalize the data so that all the pixels have 0-1 value. Also, we will add class 1 items 10 times to augment class 1 training data. As our label are 0, 1, 2, 3, 4, 5, 6, we will one-hot encode them. The complete code is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/helpers.py).
 ```
 
 def one_hot_encode(x):
@@ -243,7 +243,7 @@ And as this is a Kaggle problem, we can also compare our solution against the to
 2. Data Augmentation: This will be done to control class imbalance as mentioned in data-input. (See Preprocessing Data)
 3. The baseline will be established using a linear classifier model.
 
-The complete code is available [here](linear_classifier.py).
+The complete code is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/linear_classifier.py).
 
 ```
  def run(self, train_X, train_y, test_X, test_y, validate_X, validate_y):
@@ -284,7 +284,7 @@ The complete code is available [here](linear_classifier.py).
    - Convolution : Convolutional layers convolve around the image to detect edges, lines, and other features.
    - MaxPooling : This layer preserves the most dominant features.
     - Dropout : In this simple we randomly drop neuron to avoid overfitting.
-The complete code is available [here](cnn.py).
+The complete code is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/cnn.py).
 
 ```
 
@@ -439,7 +439,7 @@ As we can see that using CNN we significantly improved our model to classify the
 
 We can use the learning of the project in order to solve [this](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) similar problem.
 
-The complete working notebooks is availabe [here](facial-expression.ipynb).
+The complete working notebooks is availabe [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/facial-expression.ipynb).
 ## Improvements
 
 As image classification is a computationally intensive task, it is not possible to try all the variations of the hyper parameters.
