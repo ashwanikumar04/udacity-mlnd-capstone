@@ -36,9 +36,6 @@ Some sample images from the data set are:
 
 ![Fear](images/image1.jpg)
 ![Neutral](images/image2.jpg)
-![Image1](images/face1.png)
-![Image2](images/face2.png)
-![Image3](images/face3.png)
 
 ### Visualizations and Data explorations
 
@@ -49,7 +46,7 @@ Some sample images from the data set are:
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
+      <th>No.</th>
       <th>emotion</th>
       <th>pixels</th>
       <th>Usage</th>
@@ -95,7 +92,7 @@ Some sample images from the data set are:
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
+      <th>No.</th>
       <th>emotion</th>
       <th>pixels</th>
       <th>Usage</th>
@@ -287,6 +284,7 @@ The complete code is availabe [here](linear_classifier.py).
    - Convolution : Convolutional layers convolve around the image to detect edges, lines, and other features.
    - MaxPooling : This layer preservs the most dominent features.
     - Dropout : In this simple we randomnly drop neuron to avoid overfitting.
+The complete code is availabe [here](cnn.py).
 
 ```
 
@@ -434,9 +432,29 @@ class CNN:
 </table>
 </div>
 
+## Conclusion
+
+As we can see that using CNN we significantly improved our model to classify the images into respective classes. We got to a final accuracy of **.54** which is among the top 20 accuracies on the [Kaggle leaderboard](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/leaderboard).
+
+
+We can use the learning of the project in order to solve [this](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) similar problem.
+
+The complete working notebooks is availabe [here](facial-expression.ipynb).
+## Improvements
+
+As image classification is a computationally intensive task, it is not possible to try all the variations of the hyper parameters.
+
+However, there are other things too which can be done to improve the accuracy of the model.
+1. We can save the images and then use data augmentation techniques like image rotation, adding noise etc
+2. Increasing the number of epochs etc.
+
+
 ### References
 
 1. [Convolutional Neural Networks](http://cs231n.github.io/convolutional-networks/)
 2. [Cross Entropy](http://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html#cross-entropy)
 3. [Cross Entropy vs RMSE](https://jamesmccaffrey.wordpress.com/2013/11/05/why-you-should-use-cross-entropy-error-instead-of-classification-error-or-mean-squared-error-for-neural-network-classifier-training/)
 4. [Data Augmentation](https://medium.com/ymedialabs-innovation/data-augmentation-techniques-in-cnn-using-tensorflow-371ae43d5be9)
+5. [Hyper Parameter Tuning](https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74)
+6. [Hyper paramters](https://medium.com/@jrodthoughts/knowledge-tuning-hyperparameters-in-machine-learning-algorithms-part-i-67a31b1f7c88)
+
