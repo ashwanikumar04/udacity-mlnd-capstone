@@ -134,51 +134,13 @@ Some sample images from the data set are:
 </div>
 
 ## Training set grouped by classes
-![CNN](images/class.png)
+![Classes](images/class.png)
 
-## Pre-processing Data
-We will normalize the data so that all the pixels have 0-1 value. Also, we will add class 1 items 10 times to augment class 1 training data. As our label are 0, 1, 2, 3, 4, 5, 6, we will one-hot encode them. The complete code is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/helpers.py).
-```
+The above graph shows the data grouped on the basis of labels. We can see that ```label 1``` has significantly less number of records which can result in a class imbalance.
+#### Class imbalance problem
+It is the problem in machine learning where the total number of a class of data (positive) is far less than the total number of another class of data (negative). This problem is extremely common in practice and can be observed in various disciplines including fraud detection, anomaly detection, medical diagnosis, oil spillage detection, facial recognition, etc. 
 
-def one_hot_encode(x):
-    """
-    One hot encode a list of sample labels. Return a one-hot encoded vector for each label.
-    : x: List of sample Labels
-    : return: Numpy array of one-hot encoded labels
-    """
-    # http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelBinarizer.html#sklearn.preprocessing.LabelBinarizer
-    lb = LabelBinarizer()
-    lb.fit(range(max(x) + 1))
-    b = lb.transform(x)
-    return b
-
-# Converting space separated pixels to int array
-
-
-def string_to_int_array(item):
-    return [int(p) for p in item.split()]
-
-
-def get_X_and_y(df):
-    X = [string_to_int_array(item) for item in df.iloc[:, 1].values]
-    X = np.array(X) / 255.0
-    y = np.array(df.iloc[:, 0].values)
-    y = np.array(one_hot_encode(y))
-    y = y.astype(np.float32, copy=False)
-    return X, y
-
-
-def get_training_set(data):
-    not_class1 = data.loc[data['emotion'] != 1]
-    class1 = data.loc[data['emotion'] == 1]
-    class1_aug = class1
-    # This is done to handle the class imbalance for emotion 1 which has only ~500 pics
-    for i in range(11):
-        class1_aug = class1_aug.append(class1)
-    complete_training_set = not_class1.append(class1_aug)
-    return get_X_and_y(complete_training_set)
-```
-
+We will handle this problem during our pre-processing of the data.
 
 ### Solution Statement
 
@@ -237,151 +199,114 @@ And as this is a Kaggle problem, we can also compare our solution against the to
 
 
 
-#### Implementation
+### Implementation
 
-1. Data normalization: We will normalize the data so that the values are within 0-1. (See Preprocessing Data)
-2. Data Augmentation: This will be done to control class imbalance as mentioned in data-input. (See Preprocessing Data)
-3. The baseline will be established using a linear classifier model.
+#### Pre-processing Data
+We will normalize the data so that all the pixels have 0-1 value. Also, we will add class 1 items 10 times to augment class 1 training data. As our label are 0, 1, 2, 3, 4, 5, 6, we will one-hot encode them. The complete code is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/helpers.py).
+
+As mentioned earlier, the data is not uniform. The images which belong to label 1 are very less compared to other labels. In order to handle this, we will replicate label 1 class images 10 times which will result in around ~5K images for this label thus mitigating the class imbalance.
+
+
+1. Linear  classifier:
+
+I used a linear classifier to classify the images. 
+```
+y = xW + b
+```
+
+Here, x is the image vector of size [?,2304]. ? denotes any number.
+```W``` is the weight vector of dimension [2304,7]. 7 is for the number of classes.
+
+```b``` is a bias vector of dimension [7].
+
+#### Advantages of parametrized learning and linear classification
+
+There are two primary advantages to utilizing parameterized learning, such as in the approach I detailed above:
+
+    - Once we are done training our model, we can discard the input data and keep only the weight matrix W and the bias vector b. This substantially reduces the size of our model since we only need to store two sets of vectors (versus the entire training set).
+    - Classifying new test data is fast. In order to perform a classification, all we need to do is take the dot product of W and x_{i}, followed by adding in the bias b. Doing this is substantially faster than needing to compare each testing point to every training example (as in the k-NN algorithm).
+
+![LC](images/lc.png)
 
 The complete code is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/linear_classifier.py).
 
-```
- def run(self, train_X, train_y, test_X, test_y, validate_X, validate_y):
-        accuracyDictionary = {};
-        x = tf.placeholder(tf.float32, shape=[None, self.image_size])
-        W = tf.Variable(tf.zeros([self.image_size, self.labels]))
-        b = tf.Variable(tf.zeros([self.labels]))
-        y = tf.matmul(x, W) + b
-        y_true = tf.placeholder(tf.float32, [None, self.labels])
-        cross_entropy = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_true, logits=y))
-        optimizer = tf.train.GradientDescentOptimizer(
-            learning_rate=self.params.learning_rate)
-        train = optimizer.minimize(cross_entropy)
-        init = tf.global_variables_initializer()
-        correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_true, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-        with tf.Session() as sess:
-            sess.run(init)
-            for step in range(self.params.epoch):
-                X, y = shuffle(train_X, train_y)
-                for current_batch in range(self.params.num_batches):
-                    batch_X, batch_y = get_batch(
-                        X, y, current_batch, self.params.batch_size)
-                    sess.run(train, feed_dict={x: batch_X, y_true: batch_y})
-                if step % self.params.epoch_to_report == 0:
-                    log(step,"Epoch")
-                    accuracyDictionary[step]=sess.run(accuracy, feed_dict={x: test_X,
-                                                      y_true: test_y})
-                    log(accuracyDictionary[step], "model accuracy")
 
-            log(sess.run(accuracy, feed_dict={x: validate_X,
-                                              y_true: validate_y}), "Final accuracy")
-        return accuracyDictionary
-```
-4. CNN Layers :
+As we can see that the accuracy achieved by linear classification is very low. One big disadvantage of using linear classification for this problem is that it does not take into account the relative location of pixels to each other. 
 
-   - Convolution : Convolutional layers convolve around the image to detect edges, lines, and other features.
-   - MaxPooling : This layer preserves the most dominant features.
-    - Dropout : In this simple we randomly drop neuron to avoid overfitting.
+That is why we need to look for another classification algorithm.
+CNN fits our requirement.
+
+
+
+2. Convolutional Neural Networks (CNNs):
+
+The process of building a Convolutional Neural Network always involves four major steps.
+
+* Step - 1: Convolution
+
+* Step - 2: Pooling
+
+* Step - 3: Flattening
+
+* Step - 4: Full connection
+
+Layers :
+
+- Convolution: Convolutional layers convolve around the image to detect edges, lines etc. Convolutional layers hyperparameters are the number of filters, filter size, stride, padding and activation functions for introducing non-linearity.
+- MaxPooling: Pooling layers reduces the dimensionality of the images by retaining the dominant pixels. Maxpooling replaces a n x n area of an image with the maximum pixel value from that area to downsample the image. Other pooling options include MeanPooling, SumPooling etc.
+- Dropout: Dropout is a simple and effective technique to prevent the neural network from overfitting during the training. Dropout is implemented by shooting a neuron randomly based on a probability. This results in the neural network not rely on the redundant info.
+- Flatten: Flattens the output of the convolution layers to feed into the Dense layers.
+- Dense: Dense layers are the traditional fully connected networks that map the scores of the convolutional layers into the correct labels with some activation function (softmax used here)
+
+Activation functions :
+
+Activation layers apply a non-linear operation to the output of the other layers such as convolutional layers or dense layers.
+
+![RELU](images/RELU.png)
+
+    ReLu Activation: the ReLU is half rectified (from bottom). f(z) is zero when z is less than zero and f(z) is equal to z when z is above or equal to zero.
+
+Optimizers :
+
+    Adam: Adam (Adaptive moment estimation) is an update to RMSProp optimizer in which the running average of both the gradients and their magnitude is used. I used Adam in all the test runs to provide a consistent baseline.
+
+#### Model:
+![CNN](images/first.png)
+
+![CNN](images/cnn_g1.png)
+
+### Refinement
+
+This did not improve much in the accuracy. So I included a drop out layer.
+![CNN](images/second.png)
+
+After adding the dropout and several trials, I got a decent accuracy.
+
+![CNN](images/cnn_2.png)
+
+I tested with multiple variations of the hyperparameters. 
+I changed epoch size, batch size, learning rate etc to test multiple times. 
+
+After multiple tests, I got the following combination of the hyperparameters
+```
+epoch: 500, num_batches: 25, batch_size: 256, learning_rate: 0.001, hold_prob: 0.5
+```
+which resulted in an accuracy of **.54**.
+
+![CNN](images/cnn_3.png)
+
+
+
 The complete code is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/cnn.py).
 
-```
-
-class CNN:
-    def __init__(self, params, labels, image_size):
-        self.params = params
-        self.labels = labels
-        self.image_size = image_size
-
-    def init_weights(self, shape):
-        init_random_dist = tf.truncated_normal(shape, stddev=0.1)
-        return tf.Variable(init_random_dist)
-
-    def init_bias(self, shape):
-        init_bias_vals = tf.constant(0.1, shape=shape)
-        return tf.Variable(init_bias_vals)
-
-    def conv2d(self, x, W):
-        # x --> [batch,H,W,channels]
-        # W --> [filter H, filter W, Channels In, Channels Out]
-        return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding="SAME")
-
-    def max_pool_2x2(self, x):
-        # x --> [batch,H,W,channels]
-        return tf.nn.max_pool(
-            x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding="SAME")
-
-    def convolutional_layer(self, input_x, shape):
-        W = self.init_weights(shape)
-        b = self.init_bias([shape[3]])
-        return tf.nn.relu(self.conv2d(input_x, W) + b)
-
-    def normal_full_layer(self, input_layer, size):
-        input_size = int(input_layer.get_shape()[1])
-        W = self.init_weights([input_size, size])
-        b = self.init_bias([size])
-        return tf.matmul(input_layer, W) + b
-
-    def run(self, train_X, train_y, test_X, test_y, validate_X, validate_y):
-        accuracyDictionary = {}
-        x = tf.placeholder(tf.float32, shape=[None, self.image_size])
-        y_true = tf.placeholder(tf.float32, shape=[None, self.labels])
-        x_image = tf.reshape(x, [-1, 48, 48, 1])
-        convo_1 = self.convolutional_layer(x_image, shape=[5, 5, 1, 32])
-        convo_1_pooling = self.max_pool_2x2(convo_1)
-
-        convo_2 = self.convolutional_layer(
-            convo_1_pooling, shape=[5, 5, 32, 64])
-        convo_2_pooling = self.max_pool_2x2(convo_2)
-
-        # Why 12 by 12 image? Because we did 2 pooling layers, so (48/2)/2 = 12
-        convo_2_flat = tf.reshape(convo_2_pooling, [-1, 12 * 12 * 64])
-        full_layer_1 = tf.nn.relu(self.normal_full_layer(convo_2_flat, 1024))
-
-        hold_prob = tf.placeholder(tf.float32, name="hold_prob")
-        full_one_dropout = tf.nn.dropout(full_layer_1, keep_prob=hold_prob)
-
-        y_pred = self.normal_full_layer(full_one_dropout, self.labels)
-        cross_entropy = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_true, logits=y_pred))
-        optimizer = tf.train.AdamOptimizer(
-            learning_rate=self.params.learning_rate)
-        train = optimizer.minimize(cross_entropy)
-        init = tf.global_variables_initializer()
-        correct_prediction = tf.equal(
-            tf.argmax(y_pred, 1), tf.argmax(y_true, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-        with tf.Session() as sess:
-            sess.run(init)
-            for step in range(self.params.epoch):
-                X, y = shuffle(train_X, train_y)
-                for current_batch in range(self.params.num_batches):
-                    batch_X, batch_y = get_batch(
-                        X, y, current_batch, self.params.batch_size)
-                    sess.run(
-                        train, feed_dict={
-                            x: batch_X,
-                            y_true: batch_y,
-                            hold_prob: self.params.hold_prob
-                        })
-                if step % self.params.epoch_to_report == 0:
-                    log(step, "Epoch")
-                    accuracyDictionary[step] = sess.run(accuracy, feed_dict={x: test_X,
-                                                                             y_true: test_y, hold_prob: 1.0})
-                    log(accuracyDictionary[step], "model accuracy")
-            log(
-                sess.run(
-                    accuracy,
-                    feed_dict={
-                        x: validate_X,
-                        y_true: validate_y,
-                        hold_prob: 1.0
-                    }), "Final accuracy")
-        return accuracyDictionary
-
-```
 ## Results
+
+For each test, I saved the model which resulted in best accuracy after multiple runs.
+The best model uses CNN with data augmentation by replicating the images for the label which is significantly low in number than the other labels. As I was training the model on my personal PC, I had to use fewer epochs to train the model.
+
+The following table compares the models with different hyperparameter values.
+
+
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -391,7 +316,6 @@ class CNN:
       <th>Params</th>
       <th>Accuracy</th>
       <th>Comments</th>
-      <th>Graph</th>
     </tr>
   </thead>
   <tbody>
@@ -401,7 +325,6 @@ class CNN:
       <td>epoch: 1000, num_batches: 64, batch_size: 32, learning_rate: 0.5, hold_prob: (0.5,)</td>
       <td>0.26</td>
       <td>Here, hold_prob has no role</td>
-      <td><image src="images/lc.png"/></td>
     </tr>
     <tr>
       <th>2</th>
@@ -409,7 +332,6 @@ class CNN:
       <td>:  epoch: 100, num_batches: 64, batch_size: 32, learning_rate: 0.5, hold_prob: (1.0,)</td>
       <td>0.24</td>
       <td>As can be seen here, it is almost similar to the linear classifier.</td>
-      <td><image src="images/cnn_g1.png"/></td>
     </tr>
     <tr>
       <th>3</th>
@@ -417,7 +339,6 @@ class CNN:
       <td>epoch: 100, num_batches: 128, batch_size: 128, learning_rate: 0.001, hold_prob: (0.5,)</td>
       <td>0.52</td>
       <td>Here, we have significant improvement</td>
-      <td><image src="images/cnn_2.png"/></td>
     </tr>
       <tr>
       <th>4</th>
@@ -425,28 +346,54 @@ class CNN:
       <td>:  epoch: 500, num_batches: 25, batch_size: 256, learning_rate: 0.001, hold_prob: (0.5,)</td>
       <td>0.54</td>
       <td>Here, we have significant improvement</td>
-      <td><image src="images/cnn_3.png"/></td>
     </tr>
     <tr>
   </tbody>
 </table>
 </div>
 
+As we can see that using CNN we significantly improved our model to classify the images into respective classes. We got to a final accuracy of **.54** which is among the top 20 accuracies on the [Kaggle leaderboard](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/leaderboard).
+
+We can include more techniques for data augmentation to generate more data and train the model on a faster machine with GPU to get a better accuracy.
+
+I have used two sets of test data, so it can be inferred that the model does well against the unseen data.
+
+
 ## Conclusion
 
-As we can see that using CNN we significantly improved our model to classify the images into respective classes. We got to a final accuracy of **.54** which is among the top 20 accuracies on the [Kaggle leaderboard](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/leaderboard).
+I have recorded the accuracy of each model as they were tested.
+![CNN](images/cnn_2.png)
+![CNN](images/cnn_3.png)
+
+These two compares the two best model with respect to the accuracy. 
+
+As we changed the hyperparameters, the accuracy improved but the model took a long time to converge.
+
+As mentioned earlier, there are two test sets. The final accuracy is based on the private test set which is used by Kaggle to decide the position in the leaderboard.
+
+
+ We got to a final accuracy of **.54** which is among the top 20 accuracies on the [Kaggle leaderboard](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/leaderboard).
 
 
 We can use the learning of the project in order to solve [this](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) similar problem.
 
-The complete working notebooks is availabe [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/facial-expression.ipynb).
+The complete working notebook is available [here](https://github.com/ashwanikumar04/udacity-mlnd-capstone/blob/master/facial-expression.ipynb).
+
+
+## Reflection
+
+Identifying the emotions by seeing an image, as it sounds is fascinating. This has many real-world applications like judging the mood of an online game player, or in a live video session.
+
+The data as such was of high quality. However, to identify emotions we need a much bigger data set. For example, to differentiate an image which depicts sad against an image which depicts happy when in both the images the person has his/her hands covering his mouth can be quite difficult. In such cases, other traits like the eyes, facial expressions etc play a major role to correctly identify the label which in turn requires a huge data set to train upon. 
+
 ## Improvements
 
-As image classification is a computationally intensive task, it is not possible to try all the variations of the hyper parameters.
+As image classification is a computationally intensive task, it is not possible to try all the variations of the hyperparameters.
 
 However, there are other things too which can be done to improve the accuracy of the model.
 1. We can save the images and then use data augmentation techniques like image rotation, adding noise etc
 2. Increasing the number of epochs etc.
+
 
 
 ### References
@@ -456,5 +403,5 @@ However, there are other things too which can be done to improve the accuracy of
 3. [Cross Entropy vs RMSE](https://jamesmccaffrey.wordpress.com/2013/11/05/why-you-should-use-cross-entropy-error-instead-of-classification-error-or-mean-squared-error-for-neural-network-classifier-training/)
 4. [Data Augmentation](https://medium.com/ymedialabs-innovation/data-augmentation-techniques-in-cnn-using-tensorflow-371ae43d5be9)
 5. [Hyper Parameter Tuning](https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74)
-6. [Hyper paramters](https://medium.com/@jrodthoughts/knowledge-tuning-hyperparameters-in-machine-learning-algorithms-part-i-67a31b1f7c88)
+6. [Hyper parameters](https://medium.com/@jrodthoughts/knowledge-tuning-hyperparameters-in-machine-learning-algorithms-part-i-67a31b1f7c88)
 
